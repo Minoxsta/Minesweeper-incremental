@@ -1,0 +1,85 @@
+[gd_scene load_steps=3 format=3 uid="uid://clvqjb016u0qo"]
+
+[ext_resource type="PackedScene" uid="uid://bkajmjn2ofbkv" path="res://minesweeper_board.tscn" id="1_2gprq"]
+[ext_resource type="Script" uid="uid://cvv2a6lqulxlt" path="res://dev_room.gd" id="1_3yskv"]
+
+[node name="dev_room" type="Node2D"]
+script = ExtResource("1_3yskv")
+
+[node name="input_control" type="Control" parent="."]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+offset_right = 482.0
+offset_bottom = 97.0
+
+[node name="width_label" type="Label" parent="input_control"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 69.0
+offset_bottom = 33.0
+text = "Width:"
+metadata/_edit_group_ = true
+
+[node name="input_width" type="SpinBox" parent="input_control/width_label"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = -4.0
+offset_right = 142.5625
+offset_bottom = 27.0
+value = 10.0
+
+[node name="height_label" type="Label" parent="input_control"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 8.0
+offset_right = 224.0
+offset_bottom = 31.0
+text = "Height:"
+metadata/_edit_group_ = true
+
+[node name="input_height" type="SpinBox" parent="input_control/height_label"]
+layout_mode = 0
+offset_left = 65.0
+offset_top = -4.0
+offset_right = 151.5625
+offset_bottom = 27.0
+value = 15.0
+
+[node name="bombs_label" type="Label" parent="input_control"]
+layout_mode = 0
+offset_left = 326.0
+offset_top = 7.0
+offset_right = 384.0
+offset_bottom = 30.0
+text = "Bombs:"
+metadata/_edit_group_ = true
+
+[node name="input_bombs" type="SpinBox" parent="input_control/bombs_label"]
+layout_mode = 0
+offset_left = 65.0
+offset_top = -4.0
+offset_right = 151.5625
+offset_bottom = 27.0
+value = 10.0
+
+[node name="submit_button" type="Button" parent="input_control"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 54.0
+offset_right = 86.0
+offset_bottom = 86.0
+text = "Create"
+
+[node name="board_control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 37.0
+offset_top = 111.0
+offset_right = 497.0
+offset_bottom = 518.0
+
+[node name="minesweeper_board" parent="board_control" instance=ExtResource("1_2gprq")]
+
+[connection signal="pressed" from="input_control/submit_button" to="." method="_on_submit_button_pressed"]

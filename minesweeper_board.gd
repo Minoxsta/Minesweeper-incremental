@@ -1,0 +1,202 @@
+class_name MinesweeperBoard
+extends Node2D
+
+signal game_won
+signal game_lost
+
+static var BOARD_SCENE = preload("res://minesweeper_board.tscn")
+
+@export var game_width : int = 10
+@export var game_height : int = 15
+@export var bomb_count : int = 10
+
+#@onready var mine_tileset : TileSet = $board_grid.tile_set 
+var unopened_cell_tile = {"source": 2, "atlas_coords": Vector2i(0,11)}
+
+
+var cell_array : Array
+var bomb_list = []
+var hold_list = [] # Should only contain Cell's
+
+var opened_count : int = 0
+
+static func new_board(width : int, height : int, bombs : int) -> MinesweeperBoard:
+	var board : MinesweeperBoard = BOARD_SCENE.instantiate()
+	board.game_width = width
+	board.game_height = height
+	board.bomb_count = bombs
+	return board
+
+func _init() -> void:
+	pass
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_PAUSABLE
+	make_game_board()
+
+func initialize_cell_array():
+	cell_array = []
+	for x in range(game_width):
+		cell_array.append([])
+		for y in range(game_height):
+			var cell = Cell.new(Vector2i(x, y))
+			cell_array[x].append(cell)
+
+func make_game_board():
+	initialize_cell_array()
+	make_bomb_spots()
+	find_numbers()
+	update_tilemap()
+
+# bomb_list stores the vector positions of the chosen bombs
+func make_bomb_spots():
+	while bomb_list.size() < bomb_count:
+		add_bomb()
+
+func find_numbers():
+	for x in range(game_width):
+		for y in range(game_height):
+			find_number(cell_array[x][y])
+
+func find_number(cell : Cell):
+	if cell.bomb:
+		return
+	
+	var neighbors = get_neighbors(cell.coords)
+	var count = 0
+	for neigbor : Cell in neighbors:
+		if neigbor.bomb:
+			count += 1
+	
+	#print(count)
+	cell.bomb_neighbors = count
+
+func add_bomb() -> Vector2i:
+	var new_bomb_x = randi() % game_width
+	var new_bomb_y = randi() % game_height
+	while Vector2i(new_bomb_x, new_bomb_y) in bomb_list:
+		new_bomb_x = randi() % game_width
+		new_bomb_y = randi() % game_height
+	
+	var bomb_spot = Vector2i(new_bomb_x, new_bomb_y)
+	
+	cell_array[new_bomb_x][new_bomb_y].bomb = true
+	bomb_list.append(bomb_spot)
+	
+	return bomb_spot
+
+func update_tilemap():
+	for x in range(game_width):
+		for y in range(game_height):
+			var cell : Cell = cell_array[x][y]
+			$board_grid.set_cell(Vector2i(x,y), Cell.SOURCE, cell.get_atlas())
+
+
+
+func get_cell_at_vector(vec : Vector2i):
+	var width = cell_array.size()
+	if vec.x < width and vec.x >= 0:
+		var height = cell_array[vec.x].size()
+		if vec.y < height and vec.y >= 0:
+			return cell_array[vec.x][vec.y]
+	
+	return null
+
+func get_cell_at(x : int, y : int):
+	return cell_array[x][y]
+
+func _process(delta: float) -> void:
+	if Input.is_action_pressed("main_action"):
+		var board_grid_pos = grid_coord_at_mouse()
+		var cell : Cell = get_cell_at_vector(board_grid_pos)
+		if cell != null:
+			hold(cell)
+		else:
+			release_all()
+	
+	if Input.is_action_just_released("main_action"):
+		var board_grid_pos = grid_coord_at_mouse()
+		var cell : Cell = get_cell_at_vector(board_grid_pos)
+		if cell != null:
+			open(cell)
+		else:
+			release_all()
+	
+	if Input.is_action_just_released("secondary_action"):
+		var board_grid_pos = grid_coord_at_mouse()
+		var cell : Cell = get_cell_at_vector(board_grid_pos)
+		if cell != null:
+			flag(cell)
+		
+	update_tilemap()
+
+func grid_coord_at_mouse() -> Vector2i:
+	var mouse_pos = get_global_mouse_position()
+	return $board_grid.local_to_map($board_grid.to_local(mouse_pos))
+
+func hold(cell : Cell):
+	release_all()
+	
+	cell.hold()
+	hold_list.push_back(cell)
+
+func release_all():
+	while not hold_list.is_empty():
+		var old_cell : Cell = hold_list.pop_back()
+		old_cell.release()
+
+func open(cell : Cell):
+	match cell.open_cell():
+		Cell.CELL_OPEN_RESPONSE.OPEN_NUMBER:
+			# Check if adjacent flags equals number
+			return
+		Cell.CELL_OPEN_RESPONSE.FLAGGED:
+			return
+		Cell.CELL_OPEN_RESPONSE.OPEN_SAFE:
+			# Safely opened a closed cell
+			opened_count += 1
+			if cell.bomb_neighbors == 0:
+				for neighbor in get_neighbors(cell.coords):
+					open(neighbor)
+		Cell.CELL_OPEN_RESPONSE.BOMB:
+			lose()
+			pass
+	if opened_count >= win_count():
+		win()
+
+func flag(cell : Cell):
+	if cell.open:
+		return
+	
+	cell.flag()
+	# Decrease bomb counter
+
+func win_count():
+	return game_width * game_height - bomb_count
+
+func win():
+	# Reveal/flag all
+	
+	get_tree().paused = true
+	emit_signal("game_won")
+
+func lose():
+	# Reveal bombs
+	# Update visual
+	get_tree().paused = true
+	emit_signal("game_lost")
+
+# Iterates over -1, 0, 1 to add to x and y of the given coordinate 
+# to generate all the neighbors in a square around the coord.
+func get_neighbors(coords: Vector2i):
+	var neighbors = []
+	for i in range(-1, 2):
+		for j in range(-1, 2):
+			var x = coords.x + i
+			var y = coords.y + j
+			if i == 0 and j == 0:
+				continue
+			if 0 <= x and x < game_width and 0 <= y and y < game_height:
+				neighbors.append(cell_array[x][y])
+	
+	return neighbors

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=4 uid="uid://bkajmjn2ofbkv"]
+
+[ext_resource type="Script" uid="uid://ds3aujv6m3vr8" path="res://minesweeper_board.gd" id="1_ivwqh"]
+[ext_resource type="TileSet" uid="uid://d1gkv1mlbdxcw" path="res://minesweeper_tileset.tres" id="2_60qh5"]
+
+[node name="minesweeper_board" type="Node2D"]
+script = ExtResource("1_ivwqh")
+
+[node name="board_grid" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAAAAAAAgAAAAsAAAABAAAAAgAAAAsAAAACAAAAAgAAAAsAAAABAAIAAgAAAAsAAAAAAAIAAgAAAAsAAAAAAAEAAgAAAAsAAAABAAEAAgAAAAsAAAACAAEAAgAAAAsAAAAAAAMAAgAAAAsAAAAAAAQAAgAAAAsAAAADAAAAAgAAAAsAAAAEAAAAAgAAAAsAAAA=")
+tile_set = ExtResource("2_60qh5")

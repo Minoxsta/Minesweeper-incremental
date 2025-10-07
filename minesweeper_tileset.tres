@@ -1,0 +1,61 @@
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://d1gkv1mlbdxcw"]
+
+[ext_resource type="Texture2D" uid="uid://dastqc3m61r1w" path="res://PC _ Computer - Minesweeper - Miscellaneous - General Sprites.png" id="1_vyafj"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2477s"]
+resource_name = "Faces"
+texture = ExtResource("1_vyafj")
+margins = Vector2i(14, 20)
+separation = Vector2i(1, 1)
+texture_region_size = Vector2i(24, 24)
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dyb0s"]
+resource_name = "Cells"
+texture = ExtResource("1_vyafj")
+margins = Vector2i(14, 8)
+separation = Vector2i(1, 1)
+1:11/0 = 0
+3:12/0 = 0
+4:12/0 = 0
+5:12/0 = 0
+6:12/0 = 0
+7:12/0 = 0
+2:12/0 = 0
+1:12/0 = 0
+0:12/0 = 0
+0:11/0 = 0
+2:11/0 = 0
+3:11/0 = 0
+4:11/0 = 0
+5:11/0 = 0
+6:11/0 = 0
+7:11/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cr21w"]
+resource_name = "Display Numbers"
+texture = ExtResource("1_vyafj")
+margins = Vector2i(14, 146)
+separation = Vector2i(1, 1)
+texture_region_size = Vector2i(13, 23)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+
+[resource]
+sources/1 = SubResource("TileSetAtlasSource_2477s")
+sources/2 = SubResource("TileSetAtlasSource_dyb0s")
+sources/3 = SubResource("TileSetAtlasSource_cr21w")
