@@ -105,23 +105,23 @@ func get_cell_at_vector(vec : Vector2i):
 func get_cell_at(x : int, y : int):
 	return cell_array[x][y]
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_pressed("main_action"):
 		var board_grid_pos = grid_coord_at_mouse()
 		var cell : Cell = get_cell_at_vector(board_grid_pos)
+		release_all()
 		if cell != null:
 			hold(cell)
-		else:
-			release_all()
-	
+
+
 	if Input.is_action_just_released("main_action"):
 		var board_grid_pos = grid_coord_at_mouse()
 		var cell : Cell = get_cell_at_vector(board_grid_pos)
 		if cell != null:
 			open(cell)
-		else:
-			release_all()
-	
+		release_all()
+
+
 	if Input.is_action_just_released("secondary_action"):
 		var board_grid_pos = grid_coord_at_mouse()
 		var cell : Cell = get_cell_at_vector(board_grid_pos)
@@ -137,8 +137,15 @@ func grid_coord_at_mouse() -> Vector2i:
 func hold(cell : Cell):
 	release_all()
 	
-	cell.hold()
-	hold_list.push_back(cell)
+	if cell.open:
+		var neighbors = get_neighbors(cell.coords)
+		for neighbor : Cell in neighbors:
+			neighbor.hold()
+			hold_list.push_back(neighbor)
+	else:
+		cell.hold()
+		hold_list.push_back(cell)
+
 
 func release_all():
 	while not hold_list.is_empty():
@@ -149,6 +156,11 @@ func open(cell : Cell):
 	match cell.open_cell():
 		Cell.CELL_OPEN_RESPONSE.OPEN_NUMBER:
 			# Check if adjacent flags equals number
+			var neighbors = get_neighbors(cell.coords)
+			var flag_count = count_flags(neighbors)
+			if flag_count == cell.bomb_neighbors:
+				open_all_held()
+			
 			return
 		Cell.CELL_OPEN_RESPONSE.FLAGGED:
 			return
@@ -163,6 +175,18 @@ func open(cell : Cell):
 			pass
 	if opened_count >= win_count():
 		win()
+
+func count_flags(cell_list : Array) -> int:
+	var flags = 0
+	for cell : Cell in cell_list:
+		if cell.flagged:
+			flags += 1
+	return flags
+
+func open_all_held():
+	for cell : Cell in hold_list:
+		if not cell.open:
+			open(cell)
 
 func flag(cell : Cell):
 	if cell.open:
