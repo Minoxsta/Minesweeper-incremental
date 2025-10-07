@@ -1,0 +1,11 @@
+TODO:
+first cell not bomb
+chording
+reveal bombs at win/lose
+git
+
+-win-
+-flags-
+-playing-
+-reset-
+-create diff size boards-
