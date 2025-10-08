@@ -122,7 +122,7 @@ func _process(_delta: float) -> void:
 		release_all()
 
 
-	if Input.is_action_just_released("secondary_action"):
+	if Input.is_action_just_pressed("secondary_action"):
 		var board_grid_pos = grid_coord_at_mouse()
 		var cell : Cell = get_cell_at_vector(board_grid_pos)
 		if cell != null:
