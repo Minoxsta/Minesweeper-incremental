@@ -1,8 +1,8 @@
 TODO:
 first cell not bomb
-chording
-reveal bombs at win/lose
 file structure 
+3bv count
+
 
 -win-
 -flags-
@@ -10,3 +10,5 @@ file structure
 -reset-
 -create diff size boards-
 -git-
+-chording-
+-reveal bombs at win/lose-
