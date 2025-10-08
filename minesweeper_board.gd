@@ -200,6 +200,12 @@ func win_count():
 
 func win():
 	# Reveal/flag all
+	for col in cell_array:
+		for cell : Cell in col:
+			if cell.bomb and not cell.flagged:
+				flag(cell)
+			else:
+				open(cell)
 	
 	get_tree().paused = true
 	emit_signal("game_won")
