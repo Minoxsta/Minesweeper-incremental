@@ -171,6 +171,7 @@ func open(cell : Cell):
 				for neighbor in get_neighbors(cell.coords):
 					open(neighbor)
 		Cell.CELL_OPEN_RESPONSE.BOMB:
+			cell.set_reveal_state(true)
 			lose()
 			pass
 	if opened_count >= win_count():
@@ -211,8 +212,10 @@ func win():
 	emit_signal("game_won")
 
 func lose():
-	# Reveal bombs
-	# Update visual
+	for col in cell_array:
+		for cell : Cell in col:
+			cell.set_reveal_state()
+	
 	get_tree().paused = true
 	emit_signal("game_lost")
 
