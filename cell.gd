@@ -33,6 +33,7 @@ var held = false
 var flagged = false
 var bomb = false
 var bomb_neighbors = 0
+var counted_3bv = false
 
 var reveal = false
 var reveal_state := REVEAL_STATE.UNSET

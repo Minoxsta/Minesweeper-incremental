@@ -92,7 +92,6 @@ func update_tilemap():
 			$board_grid.set_cell(Vector2i(x,y), Cell.SOURCE, cell.get_atlas())
 
 
-
 func get_cell_at_vector(vec : Vector2i):
 	var width = cell_array.size()
 	if vec.x < width and vec.x >= 0:
@@ -208,6 +207,8 @@ func win():
 			else:
 				open(cell)
 	
+	var _3bv = calculate_3bv()
+	
 	get_tree().paused = true
 	emit_signal("game_won")
 
@@ -233,3 +234,41 @@ func get_neighbors(coords: Vector2i):
 				neighbors.append(cell_array[x][y])
 	
 	return neighbors
+
+
+func calculate_3bv() -> int:
+	var count_3bv = 0
+	for col in cell_array:
+		for cell : Cell in col:
+			if adds_to_3bv(cell):
+				count_3bv += 1
+	
+	print(count_3bv)
+	return count_3bv
+
+func adds_to_3bv(cell : Cell) -> bool:
+	if cell.bomb or cell.counted_3bv:
+		return false
+	
+	cell.counted_3bv = true
+	
+	if cell.bomb_neighbors > 0:
+		if not has_0_neighbor(cell):
+			return true
+	
+	var queue = get_neighbors(cell.coords)
+	while not queue.is_empty():
+		var q_cell : Cell = queue.pop_back()
+		if q_cell.counted_3bv:
+			continue
+		q_cell.counted_3bv = true
+		if q_cell.bomb_neighbors == 0 and not q_cell.bomb:
+			queue += get_neighbors(q_cell.coords)
+		
+	return true
+
+func has_0_neighbor(cell : Cell):
+	for neighbor : Cell in get_neighbors(cell.coords):
+		if neighbor.bomb_neighbors == 0 and not neighbor.bomb:
+			return true
+	return false

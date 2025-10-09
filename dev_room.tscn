@@ -19,7 +19,7 @@ offset_left = 18.0
 offset_top = 10.0
 offset_right = 69.0
 offset_bottom = 33.0
-text = "Width:"
+text = "Wid₸h:"
 metadata/_edit_group_ = true
 
 [node name="input_width" type="SpinBox" parent="input_control/width_label"]
