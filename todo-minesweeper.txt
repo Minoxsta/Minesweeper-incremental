@@ -1,7 +1,23 @@
 TODO:
 first cell not bomb
 file structure 
-3bv count
+click count 
+
+
+new mechanics:
+	multi-tile bobms?
+	clear area within X clicks, within X seconds
+	wrap around boards
+	defuse big bomb, by clearing specific tiles in correct order
+	little guy getting chased by monster, moved with clicks
+	areas locked by gate, open with button
+	moving mines, making "old" numbers turn to '?'
+	boss? battle, fighting NPC to take over/control territory
+	boss? battle, clearing areas to earn moves on Tic-Tac-Toe/Connect-4/Checkers/...
+	fog of war
+	
+
+scp foundation theme?
 
 
 -win-
@@ -12,3 +28,4 @@ file structure
 -git-
 -chording-
 -reveal bombs at win/lose-
+-3bv count-
